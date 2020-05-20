@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AnotherPagination",
+        "repositoryURL": "https://github.com/rexcosta/AnotherPagination",
+        "state": {
+          "branch": "master",
+          "revision": "b4728c2079e64737e5dae92e50cf36c50cc924ca",
+          "version": null
+        }
+      },
+      {
+        "package": "AnotherSwiftCommonLib",
+        "repositoryURL": "https://github.com/rexcosta/AnotherSwiftCommonLib.git",
+        "state": {
+          "branch": "master",
+          "revision": "662b1030851b78653d2f53d7e42abf70b90b900e",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

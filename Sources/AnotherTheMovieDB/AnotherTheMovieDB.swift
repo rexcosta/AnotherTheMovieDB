@@ -35,6 +35,7 @@ public struct AnotherTheMovieDB {
     public let movieService: MovieServiceProtocol
     public let searchService: SearchServiceProtocol
     public let genreService: GenreServiceProtocol
+    public let imageService: ImageServiceProtocol
     
     /// Creates a full functional AnotherTheMovieDB to be used
     /// - Parameters:
@@ -44,13 +45,15 @@ public struct AnotherTheMovieDB {
     ///   - movieService: the instance resposible to do movie related operations
     ///   - searchService: the instance resposible to do search related operations
     ///   - genreService: the instance resposible to do genre related operations
+    ///   - imageService: the instance resposible to do image related operations
     public init(
         authenticationManager: AuthenticationManagerProtocol,
         languageManager: LanguageManagerProtocol,
         apiRequestBuilder: ApiRequestBuilder,
         movieService: MovieServiceProtocol,
         searchService: SearchServiceProtocol,
-        genreService: GenreServiceProtocol
+        genreService: GenreServiceProtocol,
+        imageService: ImageServiceProtocol
     ) {
         self.authenticationManager = authenticationManager
         self.languageManager = languageManager
@@ -58,6 +61,7 @@ public struct AnotherTheMovieDB {
         self.movieService = movieService
         self.searchService = searchService
         self.genreService = genreService
+        self.imageService = imageService
     }
     
 }
@@ -106,6 +110,8 @@ extension AnotherTheMovieDB {
         let subsystem = AnotherTheMovieDB.subsystem()
         let movieLog = OSLog(subsystem: subsystem, category: "Movies")
         let searchLog = OSLog(subsystem: subsystem, category: "Search")
+        let genreLog = OSLog(subsystem: subsystem, category: "Genres")
+        let imageLog = OSLog(subsystem: subsystem, category: "Images")
         
         let movieService = MovieService(
             log: movieLog,
@@ -121,6 +127,13 @@ extension AnotherTheMovieDB {
         )
         
         let genreService = GenreService(
+            log: genreLog,
+            network: network,
+            apiRequestBuilder: apiRequestBuilder
+        )
+        
+        let imageService = ImageService(
+            log: imageLog,
             network: network,
             apiRequestBuilder: apiRequestBuilder
         )
@@ -131,7 +144,8 @@ extension AnotherTheMovieDB {
             apiRequestBuilder: apiRequestBuilder,
             movieService: movieService,
             searchService: searchService,
-            genreService: genreService
+            genreService: genreService,
+            imageService: imageService
         )
     }
     

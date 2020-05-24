@@ -26,7 +26,7 @@ import AnotherSwiftCommonLib
 
 struct AppErrorMapper: ObjectMapper {
     
-    let context: ErrorContext
+    let context: NetworkErrorContext
     
     func mapInput(_ input: NetworkError) -> AnotherTheMovieDbError {
         return AnotherTheMovieDbError.network(context: context, cause: input)

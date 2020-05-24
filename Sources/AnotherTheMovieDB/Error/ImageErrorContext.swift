@@ -24,43 +24,6 @@
 
 import AnotherSwiftCommonLib
 
-public enum SearchAPI {
-    case movies(query: String, page: Int)
-}
-
-extension SearchAPI: ApiEndPoint {
-    
-    public var requiresAuth: Bool {
-        return true
-    }
-    
-    public var scheme: String {
-        return "https"
-    }
-    
-    public var baseUrl: String {
-        return "api.themoviedb.org/3/search"
-    }
-    
-    public var path: String {
-        switch self {
-        case .movies:
-            return "movie"
-        }
-    }
-    
-    public var parameters: [HttpQueryParameter] {
-        switch self {
-        case .movies(let query, let page):
-            return [
-                HttpQueryParameter(name: "query", value: "\(query)"),
-                HttpQueryParameter(name: "page", value: "\(page)")
-            ]
-        }
-    }
-    
-    public var method: HttpMethod {
-        return .get
-    }
-    
+public enum ImageErrorContext {
+    case movieDontHavePoster
 }

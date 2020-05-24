@@ -23,12 +23,16 @@ let package = Package(
         .package(
             url: "https://github.com/rexcosta/AnotherPagination",
             .branch("master")
+        ),
+        .package(
+            url: "https://github.com/rexcosta/AnotherCombineCache",
+            .branch("master")
         )
     ],
     targets: [
         .target(
             name: "AnotherTheMovieDB",
-            dependencies: ["AnotherSwiftCommonLib", "AnotherPagination"]
+            dependencies: ["AnotherSwiftCommonLib", "AnotherPagination", "AnotherCombineCache"]
         ),
         .testTarget(
             name: "AnotherTheMovieDBTests",

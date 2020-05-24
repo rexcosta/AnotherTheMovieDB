@@ -28,6 +28,7 @@ import XCTest
 final class AnotherTheMovieDBTests: XCTestCase {
     
     func testExample() {
+        
     }
     
     static var allTests = [

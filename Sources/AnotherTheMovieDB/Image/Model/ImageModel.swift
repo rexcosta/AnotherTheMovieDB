@@ -23,44 +23,21 @@
 //
 
 import AnotherSwiftCommonLib
+import Foundation
 
-public enum SearchAPI {
-    case movies(query: String, page: Int)
+public struct ImageModel {
+    public let request: NetworkRequest
+    public let data: Data
 }
 
-extension SearchAPI: ApiEndPoint {
+extension ImageModel: Hashable {
     
-    public var requiresAuth: Bool {
-        return true
+    public static func ==(lhs: ImageModel, rhs: ImageModel) -> Bool {
+        return lhs.request == rhs.request
     }
     
-    public var scheme: String {
-        return "https"
-    }
-    
-    public var baseUrl: String {
-        return "api.themoviedb.org/3/search"
-    }
-    
-    public var path: String {
-        switch self {
-        case .movies:
-            return "movie"
-        }
-    }
-    
-    public var parameters: [HttpQueryParameter] {
-        switch self {
-        case .movies(let query, let page):
-            return [
-                HttpQueryParameter(name: "query", value: "\(query)"),
-                HttpQueryParameter(name: "page", value: "\(page)")
-            ]
-        }
-    }
-    
-    public var method: HttpMethod {
-        return .get
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(request)
     }
     
 }

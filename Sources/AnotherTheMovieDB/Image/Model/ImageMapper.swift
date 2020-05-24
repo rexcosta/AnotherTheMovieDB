@@ -23,9 +23,18 @@
 //
 
 import AnotherSwiftCommonLib
+import Foundation
 
-public enum ErrorContext {
-    case nowPlayingMovies
-    case searchMovies(query: String?)
-    case genre
+struct ImageMapper: ObjectMapper {
+    
+    let request: NetworkRequest
+    
+    init(request: NetworkRequest) {
+        self.request = request
+    }
+    
+    func mapInput(_ input: Data) -> ImageModel {
+        return ImageModel(request: request, data: input)
+    }
+    
 }

@@ -25,6 +25,7 @@
 import AnotherSwiftCommonLib
 
 public protocol ApiEndPoint {
+    var requiresAuth: Bool { get }
     var scheme: String { get }
     var baseUrl: String { get }
     var path: String { get }

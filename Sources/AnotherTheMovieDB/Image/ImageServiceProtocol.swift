@@ -23,44 +23,11 @@
 //
 
 import AnotherSwiftCommonLib
+import Combine
+import Foundation
 
-public enum SearchAPI {
-    case movies(query: String, page: Int)
-}
-
-extension SearchAPI: ApiEndPoint {
+public protocol ImageServiceProtocol {
     
-    public var requiresAuth: Bool {
-        return true
-    }
-    
-    public var scheme: String {
-        return "https"
-    }
-    
-    public var baseUrl: String {
-        return "api.themoviedb.org/3/search"
-    }
-    
-    public var path: String {
-        switch self {
-        case .movies:
-            return "movie"
-        }
-    }
-    
-    public var parameters: [HttpQueryParameter] {
-        switch self {
-        case .movies(let query, let page):
-            return [
-                HttpQueryParameter(name: "query", value: "\(query)"),
-                HttpQueryParameter(name: "page", value: "\(page)")
-            ]
-        }
-    }
-    
-    public var method: HttpMethod {
-        return .get
-    }
+    func findImage(for movie: MovieModel, with size: ImageSize) -> AnyPublisher<ImageModel, AnotherTheMovieDbError>
     
 }

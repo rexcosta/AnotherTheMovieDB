@@ -30,6 +30,10 @@ public enum MovieAPI {
 
 extension MovieAPI: ApiEndPoint {
     
+    public var requiresAuth: Bool {
+        return true
+    }
+    
     public var scheme: String {
         return "https"
     }

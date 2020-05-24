@@ -23,44 +23,35 @@
 //
 
 import AnotherSwiftCommonLib
+import AnotherCombineCache
+import Combine
+import Foundation
+import os
 
-public enum SearchAPI {
-    case movies(query: String, page: Int)
-}
-
-extension SearchAPI: ApiEndPoint {
+final class ImageService: ImageServiceProtocol {
     
-    public var requiresAuth: Bool {
-        return true
-    }
+    private let apiRequestBuilder: ApiRequestBuilder
     
-    public var scheme: String {
-        return "https"
-    }
+    private let imagesCache: MultipleValuesCache<NetworkRequest, ImageModel, AnotherTheMovieDbError>
     
-    public var baseUrl: String {
-        return "api.themoviedb.org/3/search"
-    }
-    
-    public var path: String {
-        switch self {
-        case .movies:
-            return "movie"
+    init(log: OSLog = .default, network: NetworkProtocol, apiRequestBuilder: ApiRequestBuilder) {
+        self.apiRequestBuilder = apiRequestBuilder
+        
+        imagesCache = MultipleValuesCache(log: log, cacheName: "Images") { request -> AnyPublisher<ImageModel, AnotherTheMovieDbError> in
+            return network.requestData(
+                request: request,
+                objectMapper: ImageMapper(request: request),
+                errorMapper: AppErrorMapper(context: .image)
+            )
         }
     }
     
-    public var parameters: [HttpQueryParameter] {
-        switch self {
-        case .movies(let query, let page):
-            return [
-                HttpQueryParameter(name: "query", value: "\(query)"),
-                HttpQueryParameter(name: "page", value: "\(page)")
-            ]
+    func findImage(for movie: MovieModel, with size: ImageSize) -> AnyPublisher<ImageModel, AnotherTheMovieDbError> {
+        guard let posterPath = movie.posterPath else {
+            return Result.makeError(.image(context: .movieDontHavePoster))
         }
-    }
-    
-    public var method: HttpMethod {
-        return .get
+        let request = apiRequestBuilder.make(endPoint: ImageAPI.movie(posterPath, size: size))
+        return imagesCache.value(for: request)
     }
     
 }

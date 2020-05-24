@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "AnotherCombineCache",
+        "repositoryURL": "https://github.com/rexcosta/AnotherCombineCache",
+        "state": {
+          "branch": "master",
+          "revision": "25bb9d3f4dc04c8be1f078f047371365901efbb2",
+          "version": null
+        }
+      },
+      {
         "package": "AnotherPagination",
         "repositoryURL": "https://github.com/rexcosta/AnotherPagination",
         "state": {
@@ -15,7 +24,7 @@
         "repositoryURL": "https://github.com/rexcosta/AnotherSwiftCommonLib.git",
         "state": {
           "branch": "master",
-          "revision": "662b1030851b78653d2f53d7e42abf70b90b900e",
+          "revision": "95a150b90dd2e202e1f5da05efb7350ae075000f",
           "version": null
         }
       }

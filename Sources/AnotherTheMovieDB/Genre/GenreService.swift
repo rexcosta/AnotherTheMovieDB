@@ -23,6 +23,7 @@
 //
 
 import AnotherSwiftCommonLib
+import AnotherCombineCache
 import Combine
 import os
 
@@ -30,10 +31,10 @@ final class GenreService: GenreServiceProtocol {
     
     private let genresCache: ValueCache<[GenreModel], AnotherTheMovieDbError>
     
-    init(network: NetworkProtocol, apiRequestBuilder: ApiRequestBuilder) {
+    init(log: OSLog = .default, network: NetworkProtocol, apiRequestBuilder: ApiRequestBuilder) {
         let request = apiRequestBuilder.make(endPoint: GenreAPI.movieGenres)
         
-        genresCache = ValueCache {
+        genresCache = ValueCache(log: log, cacheName: "MoviesGenres") {
             return network.requestDecodable(
                 request: request,
                 objectMapper: GenreMapper(),

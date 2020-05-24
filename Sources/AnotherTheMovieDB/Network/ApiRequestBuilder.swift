@@ -59,15 +59,15 @@ public struct ApiRequestBuilder {
             method: endPoint.method
         )
         
-        request.add(parameters: [
-            HttpQueryParameter(name: "api_key", value: authenticationManager.apiKey),
-            
-            // Pass a ISO 639-1 value to display translated data for the fields that support it.
-            //   minLength: 2
-            //   pattern: ([a-z]{2})-([A-Z]{2})
-            //   default: en-US
-            HttpQueryParameter(name: "language", value: languageManager.language.rawValue)
-        ])
+        // Pass a ISO 639-1 value to display translated data for the fields that support it.
+        //   minLength: 2
+        //   pattern: ([a-z]{2})-([A-Z]{2})
+        //   default: en-US
+        request.add(parameter: HttpQueryParameter(name: "language", value: languageManager.language.rawValue))
+        
+        if endPoint.requiresAuth {
+            request.add(parameter: HttpQueryParameter(name: "api_key", value: authenticationManager.apiKey))
+        }
         
         return request
     }

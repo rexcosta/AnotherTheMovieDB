@@ -25,5 +25,6 @@
 import AnotherSwiftCommonLib
 
 public enum AnotherTheMovieDbError: Error {
-    case network(context: ErrorContext, cause: NetworkError)
+    case image(context: ImageErrorContext)
+    case network(context: NetworkErrorContext, cause: NetworkError)
 }

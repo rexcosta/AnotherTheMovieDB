@@ -24,14 +24,14 @@
 
 import AnotherSwiftCommonLib
 
-public enum SearchAPI {
-    case movies(query: String, page: Int)
+public enum ImageAPI {
+    case movie(_ path: String, size: ImageSize)
 }
 
-extension SearchAPI: ApiEndPoint {
+extension ImageAPI: ApiEndPoint {
     
     public var requiresAuth: Bool {
-        return true
+        return false
     }
     
     public var scheme: String {
@@ -39,24 +39,23 @@ extension SearchAPI: ApiEndPoint {
     }
     
     public var baseUrl: String {
-        return "api.themoviedb.org/3/search"
+        return "image.tmdb.org/t/p"
     }
     
     public var path: String {
         switch self {
-        case .movies:
-            return "movie"
+        case .movie(let path, size: let size):
+            switch size {
+            case .thumbnail:
+                return "w300\(path)"
+            case .original:
+                return "original\(path)"
+            }
         }
     }
     
     public var parameters: [HttpQueryParameter] {
-        switch self {
-        case .movies(let query, let page):
-            return [
-                HttpQueryParameter(name: "query", value: "\(query)"),
-                HttpQueryParameter(name: "page", value: "\(page)")
-            ]
-        }
+        return [HttpQueryParameter]()
     }
     
     public var method: HttpMethod {

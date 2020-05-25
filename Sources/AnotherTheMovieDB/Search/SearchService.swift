@@ -66,7 +66,7 @@ extension SearchService {
         let request = apiRequestBuilder.make(endPoint: SearchAPI.movies(query: query, page: page))
         return network.requestDecodable(
             request: request,
-            objectMapper: MovieMapper(page: page),
+            objectMapper: MoviesMapper(page: page),
             errorMapper: AppErrorMapper(context: .searchMovies(query: query))
         )
     }

@@ -40,14 +40,36 @@ final class MovieService: MovieServiceProtocol {
         self.apiRequestBuilder = apiRequestBuilder
     }
     
+    func latestAddedMovie() -> AnyPublisher<MovieModel?, AnotherTheMovieDbError> {
+        let request = apiRequestBuilder.make(endPoint: MovieAPI.latestAddedMovie)
+        return network.requestDecodable(
+            request: request,
+            objectMapper: MovieMapper(),
+            errorMapper: AppErrorMapper(context: .latestAddedMovie)
+        )
+    }
+    
     func nowPlaying() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError> {
-        let bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
-        return SearchStateMachine(
-            log: log,
-            stateMachineName: "NowPlaying",
-            stateMachineQueueName: "\(bundleIdentifier).MovieService.NowPlaying"
-        ) { (page, _) in
+        return makeStateMachine(stateMachineName: "NowPlaying") { (page, _) in
             return self.fetchNowPlaying(page: page)
+        }
+    }
+    
+    func popular() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError> {
+        return makeStateMachine(stateMachineName: "Popular") { (page, _) in
+            return self.fetchPopular(page: page)
+        }
+    }
+    
+    func topRated() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError> {
+        return makeStateMachine(stateMachineName: "TopRated") { (page, _) in
+            return self.fetchTopRated(page: page)
+        }
+    }
+    
+    func upcoming() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError> {
+        return makeStateMachine(stateMachineName: "Upcoming") { (page, _) in
+            return self.fetchUpcoming(page: page)
         }
     }
     
@@ -60,9 +82,54 @@ extension MovieService {
         let request = apiRequestBuilder.make(endPoint: MovieAPI.nowPlaying(page: page))
         return network.requestDecodable(
             request: request,
-            objectMapper: MovieMapper(page: page),
+            objectMapper: MoviesMapper(page: page),
             errorMapper: AppErrorMapper(context: .nowPlayingMovies)
         )
     }
     
+    private func fetchPopular(page: Int) -> AnyPublisher<SearchDataResult<MovieModel>, AnotherTheMovieDbError> {
+        let request = apiRequestBuilder.make(endPoint: MovieAPI.popular(page: page))
+        return network.requestDecodable(
+            request: request,
+            objectMapper: MoviesMapper(page: page),
+            errorMapper: AppErrorMapper(context: .popularMovies)
+        )
+    }
+    
+    private func fetchTopRated(page: Int) -> AnyPublisher<SearchDataResult<MovieModel>, AnotherTheMovieDbError> {
+        let request = apiRequestBuilder.make(endPoint: MovieAPI.topRated(page: page))
+        return network.requestDecodable(
+            request: request,
+            objectMapper: MoviesMapper(page: page),
+            errorMapper: AppErrorMapper(context: .topRatedMovies)
+        )
+    }
+    
+    private func fetchUpcoming(page: Int) -> AnyPublisher<SearchDataResult<MovieModel>, AnotherTheMovieDbError> {
+        let request = apiRequestBuilder.make(endPoint: MovieAPI.upcoming(page: page))
+        return network.requestDecodable(
+            request: request,
+            objectMapper: MoviesMapper(page: page),
+            errorMapper: AppErrorMapper(context: .upcomingMovies)
+        )
+    }
+    
+}
+
+// MARK: Helpers
+extension MovieService {
+    
+    private func makeStateMachine(
+        stateMachineName: String,
+        dataProvider: @escaping SearchDataProvider<MovieModel, Void, AnotherTheMovieDbError>
+    ) -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError> {
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
+        return SearchStateMachine(
+            log: log,
+            stateMachineName: stateMachineName,
+            stateMachineQueueName: "\(bundleIdentifier).MovieService.\(stateMachineName)",
+            dataProvider: dataProvider
+        )
+    }
+
 }

@@ -24,18 +24,17 @@
 
 import AnotherSwiftCommonLib
 import AnotherPagination
-import Combine
 
-public protocol MovieServiceProtocol {
+struct MoviesMapper: ObjectMapper {
     
-    func latestAddedMovie() -> AnyPublisher<MovieModel?, AnotherTheMovieDbError>
+    private let page: Int
     
-    func nowPlaying() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError>
+    init(page: Int) {
+        self.page = page
+    }
     
-    func popular() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError>
-    
-    func topRated() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError>
-    
-    func upcoming() -> SearchStateMachine<MovieModel, Void, AnotherTheMovieDbError>
+    func mapInput(_ input: TheMovieDbPageDTO<MovieDTO>) -> SearchDataResult<MovieModel> {
+        return input.searchDataResult(page: page) { MovieModel(movie: $0) }
+    }
     
 }

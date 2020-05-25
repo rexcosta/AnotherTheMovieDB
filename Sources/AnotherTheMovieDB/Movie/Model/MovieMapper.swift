@@ -27,14 +27,8 @@ import AnotherPagination
 
 struct MovieMapper: ObjectMapper {
     
-    private let page: Int
-    
-    init(page: Int) {
-        self.page = page
-    }
-    
-    func mapInput(_ input: TheMovieDbPageDTO<MovieDTO>) -> SearchDataResult<MovieModel> {
-        return input.searchDataResult(page: page) { MovieModel(movie: $0) }
+    func mapInput(_ input: MovieDTO) -> MovieModel? {
+        return MovieModel(movie: input)
     }
     
 }

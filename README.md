@@ -15,9 +15,20 @@ This project is just an example to consume [The Movie DB](https://www.themoviedb
 
 ### MovieServiceProtocol
 
+* [movie/latest](https://developers.themoviedb.org/3/movies/get-now-playing)
+  * Get the most newly created movie.
+
 * [movie/now_playing](https://developers.themoviedb.org/3/movies/get-now-playing)
   * Get a list of movies in theatres.
 
+* [movie/popular](https://developers.themoviedb.org/3/movies/get-popular-movies)
+  * Get a list of the current popular movies on TMDb.
+
+* [movie/top_rated](https://developers.themoviedb.org/3/movies/get-top-rated-movies)
+  * Get the top rated movies on TMDb.
+
+* [movie/upcoming](https://developers.themoviedb.org/3/movies/get-upcoming)
+  * Get a list of upcoming movies in theatres.
 
 ## Example usuage
 ```swift

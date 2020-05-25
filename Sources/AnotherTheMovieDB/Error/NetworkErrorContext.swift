@@ -25,7 +25,11 @@
 import AnotherSwiftCommonLib
 
 public enum NetworkErrorContext {
+    case latestAddedMovie
     case nowPlayingMovies
+    case popularMovies
+    case topRatedMovies
+    case upcomingMovies
     case searchMovies(query: String?)
     case genre
     case image

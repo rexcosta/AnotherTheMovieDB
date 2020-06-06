@@ -75,9 +75,15 @@ extension AnotherTheMovieDB {
     ///   - userAgent: the user agent to use in the http requets
     ///   - language: the initial language
     ///   - network: the network layer to do http requests
-    public init(apiKey: String, userAgent: String, language: Language, network: NetworkProtocol) {
-        let languageLog = OSLog(subsystem: AnotherTheMovieDB.subsystem(), category: "Language")
-        let languageManager = LanguageManager(log: languageLog, language: language)
+    ///   - logging: loggers to be used
+    public init(
+        apiKey: String,
+        userAgent: String,
+        language: Language,
+        network: NetworkProtocol,
+        logging: Logging = Logging.default()
+    ) {
+        let languageManager = LanguageManager(log: logging.languageLog, language: language)
         
         let authenticationManager = AuthenticationManager(apiKey: apiKey)
         
@@ -91,7 +97,8 @@ extension AnotherTheMovieDB {
             authenticationManager: authenticationManager,
             languageManager: languageManager,
             apiRequestBuilder: apiRequestBuilder,
-            network: network
+            network: network,
+            logging: logging
         )
     }
     
@@ -101,39 +108,35 @@ extension AnotherTheMovieDB {
     ///   - languageManager: the instance resposible for the language
     ///   - apiRequestBuilder: the instance resposible to build the http requests
     ///   - network: the network layer to do http requests
+    ///   - logging: loggers to be used
     public init(
         authenticationManager: AuthenticationManagerProtocol,
         languageManager: LanguageManagerProtocol,
         apiRequestBuilder: ApiRequestBuilder,
-        network: NetworkProtocol
+        network: NetworkProtocol,
+        logging: Logging
     ) {
-        let subsystem = AnotherTheMovieDB.subsystem()
-        let movieLog = OSLog(subsystem: subsystem, category: "Movies")
-        let searchLog = OSLog(subsystem: subsystem, category: "Search")
-        let genreLog = OSLog(subsystem: subsystem, category: "Genres")
-        let imageLog = OSLog(subsystem: subsystem, category: "Images")
-        
         let movieService = MovieService(
-            log: movieLog,
+            log: logging.movieLog,
             network: network,
             apiRequestBuilder:
             apiRequestBuilder
         )
         
         let searchService = SearchService(
-            log: searchLog,
+            log: logging.searchLog,
             network: network,
             apiRequestBuilder: apiRequestBuilder
         )
         
         let genreService = GenreService(
-            log: genreLog,
+            log: logging.genreLog,
             network: network,
             apiRequestBuilder: apiRequestBuilder
         )
         
         let imageService = ImageService(
-            log: imageLog,
+            log: logging.imageLog,
             network: network,
             apiRequestBuilder: apiRequestBuilder
         )
@@ -151,12 +154,63 @@ extension AnotherTheMovieDB {
     
 }
 
-// MARK: Helpers
+// MARK: Logging
 extension AnotherTheMovieDB {
-    
-    private static func subsystem(bundle: Bundle = .main) -> String {
-        let bundleIdentifier = bundle.bundleIdentifier ?? ""
-        return "\(bundleIdentifier).AnotherTheMovieDB"
+
+    public struct Logging {
+        fileprivate let languageLog: OSLog
+        fileprivate let movieLog: OSLog
+        fileprivate let searchLog: OSLog
+        fileprivate let genreLog: OSLog
+        fileprivate let imageLog: OSLog
+        
+        public static func `default`() -> Logging {
+            return custom()
+        }
+        
+        public static func disabled() -> Logging {
+            return custom(
+                languageLogEnabled: false,
+                movieLogEnabled: false,
+                searchLogEnabled: false,
+                genreLogEnabled: false,
+                imageLogEnabled: false
+            )
+        }
+        
+        public static func custom(
+            languageLogEnabled: Bool = true,
+            movieLogEnabled: Bool = true,
+            searchLogEnabled: Bool = true,
+            genreLogEnabled: Bool = true,
+            imageLogEnabled: Bool = true
+        ) -> Logging {
+            let bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
+            let subsystem = "\(bundleIdentifier).AnotherTheMovieDB"
+            
+            let languageLog = makeOsLog(enabled: languageLogEnabled, subsystem: subsystem, category: "Language")
+            let movieLog = makeOsLog(enabled: languageLogEnabled, subsystem: subsystem, category: "Movies")
+            let searchLog = makeOsLog(enabled: languageLogEnabled, subsystem: subsystem, category: "Search")
+            let genreLog = makeOsLog(enabled: languageLogEnabled, subsystem: subsystem, category: "Genres")
+            let imageLog = makeOsLog(enabled: languageLogEnabled, subsystem: subsystem, category: "Images")
+            
+            return Logging(
+                languageLog: languageLog,
+                movieLog: movieLog,
+                searchLog: searchLog,
+                genreLog: genreLog,
+                imageLog: imageLog
+            )
+        }
+        
+        private static func makeOsLog(enabled: Bool, subsystem: String, category: String) -> OSLog {
+            if enabled {
+                return OSLog(subsystem: subsystem, category: category)
+            } else {
+                return .disabled
+            }
+        }
+        
     }
     
 }
